@@ -13,12 +13,22 @@ const App = () => {
       useNativeDriver: true,
     }).start();
 
-      // Hiệu ứng di chuyển quả bóng
+      
       Animated.timing(ballPosition, {
-        toValue: 200, // vị trí mới của quả bóng
+        toValue: 200, 
         duration: 3000,
         useNativeDriver: true,
       }).start();
+       {/* Hình vuông */}
+       <Animated.View
+       style={{
+         width: 50,
+         height: 50,
+         backgroundColor: 'red',
+         marginTop: 20,
+         transform: [{ scale: squareScale }],
+       }}
+     />
   }, []);
 
   return (
@@ -38,7 +48,16 @@ const App = () => {
         }}
       />
 
-     
+       {/* Hình vuông */}
+       <Animated.View
+        style={{
+          width: 50,
+          height: 50,
+          backgroundColor: 'red',
+          marginTop: 20,
+          transform: [{ scale: squareScale }],
+        }}
+      />
     </View>
   );
 };
