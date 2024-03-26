@@ -1,5 +1,5 @@
-import React, { useEffect, useRef } from 'react';
-import { View, Text, Animated, Easing } from 'react-native';
+import React, { useEffect, useRef, useState } from 'react';
+import { View, Text, Animated, Easing, PanResponder } from 'react-native';
 
 const App = () => {
   const textOpacity = useRef(new Animated.Value(0)).current;
@@ -8,6 +8,8 @@ const App = () => {
   const rotatingSquareContinuous = useRef(new Animated.Value(0)).current;
   const rotatingSquareSingle = useRef(new Animated.Value(0)).current;
   const colorChangingCircle = useRef(new Animated.Value(0)).current;
+  const circlePan = useRef(new Animated.ValueXY({ x: 0, y: 0 })).current;
+  const [circlePosition, setCirclePosition] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
     Animated.timing(textOpacity, {
@@ -16,13 +18,11 @@ const App = () => {
       useNativeDriver: true,
     }).start();
 
-    
     Animated.timing(ballPosition, {
       toValue: 200, 
       useNativeDriver: true,
     }).start();
 
-    // Hiệu ứng lò xo cho hình vuông
     Animated.spring(squareScale, {
       toValue: 2, 
       friction: 2,
@@ -30,7 +30,6 @@ const App = () => {
       useNativeDriver: true,
     }).start();
 
-    // Hiệu ứng xoay liên tục cho hình vuông
     Animated.loop(
       Animated.timing(rotatingSquareContinuous, {
         toValue: 10,
@@ -39,7 +38,7 @@ const App = () => {
         useNativeDriver: true,
       })
     ).start();
-      // Hiệu ứng đổi màu cho hình tròn
+
     Animated.loop(
       Animated.timing(colorChangingCircle, {
         toValue: 4,
@@ -48,6 +47,7 @@ const App = () => {
         useNativeDriver: true,
       })
     ).start();
+
     const simpleAnimation1 = Animated.timing(rotatingSquareSingle, {
       toValue: 1,
       duration: 1000,
@@ -68,22 +68,17 @@ const App = () => {
       easing: Easing.linear,
       useNativeDriver: true,
     });
-    
-    // Sửa đổi phần này để chạy các animation tuần tự
+
     Animated.loop(
       Animated.sequence([
         simpleAnimation1,
         simpleAnimation2,
         simpleAnimation3,
-        // Để lặp lại tuần tự, thêm một chu kỳ vào cuối mảng
       ])
     ).start();
     
   }, []);
 
- 
-
-  // Tạo hiệu ứng xoay liên tục cho hình vuông
   const rotatingSquareContinuousStyle = {
     transform: [
       {
@@ -95,19 +90,31 @@ const App = () => {
     ],
   };
 
-// Tạo chuỗi màu cho hình tròn
-const circleColor = colorChangingCircle.interpolate({
-  inputRange: [0, 0.25, 0.5, 0.75, 1],
-  outputRange: ['green', 'red', 'purple', 'yellow', 'green'],
-});
+  const circleColor = colorChangingCircle.interpolate({
+    inputRange: [0, 0.25, 0.5, 0.75, 1],
+    outputRange: ['green', 'red', 'purple', 'yellow', 'green'],
+  });
+
+  const panResponder = PanResponder.create({
+    onStartShouldSetPanResponder: () => true,
+    onPanResponderMove: Animated.event([
+      null,
+      { dx: circlePan.x, dy: circlePan.y },
+    ]),
+    onPanResponderRelease: () => {
+      Animated.spring(circlePan, {
+        toValue: { x: 0, y: 0 },
+        useNativeDriver: true,
+      }).start();
+    },
+  });
+
   return (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      {/* Dòng text */}
       <Animated.Text style={{ opacity: textOpacity }}>
         You are Welcome!
       </Animated.Text>
 
-      {/* Quả bóng */}
       <Animated.View
         style={{
           width: 50,
@@ -118,7 +125,6 @@ const circleColor = colorChangingCircle.interpolate({
         }}
       />
 
-      {/* Hình vuông với hiệu ứng xoay liên tục */}
       <Animated.View
         style={[
           {
@@ -131,18 +137,17 @@ const circleColor = colorChangingCircle.interpolate({
         ]}
       />
 
-       {/* Hình tròn */}
-       <Animated.View
+      <Animated.View
         style={{
           width: 50,
           height: 50,
           borderRadius: 25,
           backgroundColor: circleColor,
           marginTop: 20,
+          transform: [{ translateX: circlePan.x }, { translateY: circlePan.y }],
         }}
+        {...panResponder.panHandlers}
       />
-
-     
     </View>
   );
 };
