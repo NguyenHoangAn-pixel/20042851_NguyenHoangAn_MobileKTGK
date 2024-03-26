@@ -1,20 +1,29 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { useEffect, useRef } from 'react';
+import { View, Text, Animated } from 'react-native';
 
-export default function App() {
+const App = () => {
+  const textOpacity = useRef(new Animated.Value(0)).current;
+  const ballPosition = useRef(new Animated.Value(-100)).current;
+  const squareScale = useRef(new Animated.Value(1)).current;
+
+  useEffect(() => {
+    Animated.timing(textOpacity, {
+      toValue: 1,
+      duration: 3000,
+      useNativeDriver: true,
+    }).start();
+  }, []);
+
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
+    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      {/* Dòng text */}
+      <Animated.Text style={{ opacity: textOpacity }}>
+        You are Welcome!
+      </Animated.Text>
+
+     
     </View>
   );
-}
+};
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+export default App;
