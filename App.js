@@ -39,7 +39,15 @@ const App = () => {
         useNativeDriver: true,
       })
     ).start();
-
+      // Hiệu ứng đổi màu cho hình tròn
+    Animated.loop(
+      Animated.timing(colorChangingCircle, {
+        toValue: 4,
+        duration: 4000,
+        easing: Easing.linear,
+        useNativeDriver: true,
+      })
+    ).start();
     
   }, []);
 
@@ -57,7 +65,11 @@ const App = () => {
     ],
   };
 
-
+// Tạo chuỗi màu cho hình tròn
+const circleColor = colorChangingCircle.interpolate({
+  inputRange: [0, 0.25, 0.5, 0.75, 1],
+  outputRange: ['green', 'red', 'purple', 'yellow', 'green'],
+});
   return (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
       {/* Dòng text */}
@@ -89,7 +101,16 @@ const App = () => {
         ]}
       />
 
-      
+       {/* Hình tròn */}
+       <Animated.View
+        style={{
+          width: 50,
+          height: 50,
+          borderRadius: 25,
+          backgroundColor: circleColor,
+          marginTop: 20,
+        }}
+      />
 
      
     </View>
