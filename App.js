@@ -12,6 +12,13 @@ const App = () => {
       duration: 3000,
       useNativeDriver: true,
     }).start();
+
+      // Hiệu ứng di chuyển quả bóng
+      Animated.timing(ballPosition, {
+        toValue: 200, // vị trí mới của quả bóng
+        duration: 3000,
+        useNativeDriver: true,
+      }).start();
   }, []);
 
   return (
@@ -20,6 +27,16 @@ const App = () => {
       <Animated.Text style={{ opacity: textOpacity }}>
         You are Welcome!
       </Animated.Text>
+       {/* Quả bóng */}
+       <Animated.View
+        style={{
+          width: 50,
+          height: 50,
+          borderRadius: 25,
+          backgroundColor: 'blue',
+          marginTop: ballPosition,
+        }}
+      />
 
      
     </View>
