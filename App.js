@@ -48,6 +48,36 @@ const App = () => {
         useNativeDriver: true,
       })
     ).start();
+    const simpleAnimation1 = Animated.timing(rotatingSquareSingle, {
+      toValue: 1,
+      duration: 1000,
+      easing: Easing.linear,
+      useNativeDriver: true,
+    });
+    
+    const simpleAnimation2 = Animated.timing(rotatingSquareSingle, {
+      toValue: 0,
+      duration: 1000,
+      easing: Easing.linear,
+      useNativeDriver: true,
+    });
+    
+    const simpleAnimation3 = Animated.timing(rotatingSquareSingle, {
+      toValue: 1,
+      duration: 1000,
+      easing: Easing.linear,
+      useNativeDriver: true,
+    });
+    
+    // Sửa đổi phần này để chạy các animation tuần tự
+    Animated.loop(
+      Animated.sequence([
+        simpleAnimation1,
+        simpleAnimation2,
+        simpleAnimation3,
+        // Để lặp lại tuần tự, thêm một chu kỳ vào cuối mảng
+      ])
+    ).start();
     
   }, []);
 
