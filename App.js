@@ -1,10 +1,13 @@
 import React, { useEffect, useRef } from 'react';
-import { View, Text, Animated } from 'react-native';
+import { View, Text, Animated, Easing } from 'react-native';
 
 const App = () => {
   const textOpacity = useRef(new Animated.Value(0)).current;
   const ballPosition = useRef(new Animated.Value(-100)).current;
   const squareScale = useRef(new Animated.Value(1)).current;
+  const rotatingSquareContinuous = useRef(new Animated.Value(0)).current;
+  const rotatingSquareSingle = useRef(new Animated.Value(0)).current;
+  const colorChangingCircle = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
     Animated.timing(textOpacity, {
@@ -13,23 +16,47 @@ const App = () => {
       useNativeDriver: true,
     }).start();
 
-      
-      Animated.timing(ballPosition, {
-        toValue: 200, 
-        duration: 3000,
+    
+    Animated.timing(ballPosition, {
+      toValue: 200, 
+      useNativeDriver: true,
+    }).start();
+
+    // Hiệu ứng lò xo cho hình vuông
+    Animated.spring(squareScale, {
+      toValue: 2, 
+      friction: 2,
+      tension: 40,
+      useNativeDriver: true,
+    }).start();
+
+    // Hiệu ứng xoay liên tục cho hình vuông
+    Animated.loop(
+      Animated.timing(rotatingSquareContinuous, {
+        toValue: 10,
+        duration: 10000,
+        easing: Easing.linear,
         useNativeDriver: true,
-      }).start();
-       {/* Hình vuông */}
-       <Animated.View
-       style={{
-         width: 50,
-         height: 50,
-         backgroundColor: 'red',
-         marginTop: 20,
-         transform: [{ scale: squareScale }],
-       }}
-     />
+      })
+    ).start();
+
+    
   }, []);
+
+ 
+
+  // Tạo hiệu ứng xoay liên tục cho hình vuông
+  const rotatingSquareContinuousStyle = {
+    transform: [
+      {
+        rotate: rotatingSquareContinuous.interpolate({
+          inputRange: [0, 1],
+          outputRange: ['0deg', '360deg'],
+        }),
+      },
+    ],
+  };
+
 
   return (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
@@ -37,8 +64,9 @@ const App = () => {
       <Animated.Text style={{ opacity: textOpacity }}>
         You are Welcome!
       </Animated.Text>
-       {/* Quả bóng */}
-       <Animated.View
+
+      {/* Quả bóng */}
+      <Animated.View
         style={{
           width: 50,
           height: 50,
@@ -48,16 +76,22 @@ const App = () => {
         }}
       />
 
-       {/* Hình vuông */}
-       <Animated.View
-        style={{
-          width: 50,
-          height: 50,
-          backgroundColor: 'red',
-          marginTop: 20,
-          transform: [{ scale: squareScale }],
-        }}
+      {/* Hình vuông với hiệu ứng xoay liên tục */}
+      <Animated.View
+        style={[
+          {
+            width: 50,
+            height: 50,
+            backgroundColor: 'red',
+            marginTop: 20,
+          },
+          rotatingSquareContinuousStyle,
+        ]}
       />
+
+      
+
+     
     </View>
   );
 };
